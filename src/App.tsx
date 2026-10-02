@@ -4,7 +4,8 @@ import { Icon, IconName } from "./ui";
 import { useStore } from "./store";
 import { Splash, Login, Signup } from "./pages/auth";
 import { Dashboard, MenuDrawer, QuickSheet } from "./pages/home";
-import { Listings, ListingDetail, Requests, AddRequest, Deals, Projects, ProjectDetail, AddListing, AddDeal } from "./pages/lists";
+import { Listings, ListingDetail, Requests, AddRequest, Deals, Projects, ProjectDetail, AddDeal } from "./pages/lists";
+import { AddListing } from "./pages/listingform";
 import { Collab, Messages, NewReferral, Profile, Settings } from "./pages/misc";
 
 const tabs: { to: string; label: string; icon: IconName }[] = [

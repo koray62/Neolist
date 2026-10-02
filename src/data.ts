@@ -3,7 +3,7 @@ import type { PhotoNo } from "./ui";
 export type Listing = {
   id: number; title: string; location: string; price: number;
   type: "Satılık" | "Kiralık"; kind: string; rooms: string; area: number; floors: number;
-  collab: boolean; photo: PhotoNo; desc: string; features: string[];
+  collab: boolean; photo?: PhotoNo; photos?: string[]; mine?: boolean; desc: string; features: string[];
 };
 export type Request = {
   id: number; title: string; location: string; min: number; max: number;
@@ -30,10 +30,10 @@ export const featureIcons: Record<string, "car" | "balcony" | "elevator" | "flam
 };
 
 export const listings: Listing[] = [
-  { id: 1, title: "Beykoz’da 5+1 Villa", location: "Beykoz / İstanbul", price: 32500000, type: "Satılık", kind: "Villa", rooms: "5+1", area: 400, floors: 4, collab: true, photo: 1,
+  { id: 1, title: "Beykoz’da 5+1 Villa", location: "Beykoz / İstanbul", price: 32500000, type: "Satılık", kind: "Villa", rooms: "5+1", area: 400, floors: 4, collab: true, photo: 1, mine: true,
     desc: "Beykoz’un en prestijli sitelerinden birinde, orman manzaralı, modern tasarımlı villa. Geniş bahçe ve sosyal olanaklar...",
     features: ["Otopark", "Balkon", "Asansör", "Isıtma", "Doğalgaz"] },
-  { id: 2, title: "Çekmeköy’de 4+1", location: "Çekmeköy / İstanbul", price: 14750000, type: "Satılık", kind: "Villa", rooms: "4+1", area: 210, floors: 3, collab: true, photo: 3,
+  { id: 2, title: "Çekmeköy’de 4+1", location: "Çekmeköy / İstanbul", price: 14750000, type: "Satılık", kind: "Villa", rooms: "4+1", area: 210, floors: 3, collab: true, photo: 3, mine: true,
     desc: "Metroya yakın, site içinde ferah ve aydınlık 4+1 müstakil villa.", features: ["Otopark", "Balkon", "Güvenlik"] },
   { id: 3, title: "Kadıköy’de 3+1 Daire", location: "Kadıköy / İstanbul", price: 85000, type: "Kiralık", kind: "Daire", rooms: "3+1", area: 145, floors: 5, collab: false, photo: 2,
     desc: "Deniz manzaralı, yeni yenilenmiş kiralık daire.", features: ["Balkon", "Asansör", "Isıtma"] },

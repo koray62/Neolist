@@ -85,6 +85,7 @@ svg { flex: none; }
 .meta { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 8px; align-items: center; }
 .meta span { display: inline-flex; gap: 5px; align-items: center; }
 .photo { position: relative; border-radius: 12px 12px 0 0; overflow: hidden; background: #8cc3ea; }
+.photo > svg.art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .photo > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .fav { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; display: grid; place-items: center; color: #fff; z-index: 2; }
 .fav.circle { background: rgba(255, 255, 255, .92); color: var(--ink); border-radius: 50%; }
@@ -159,3 +160,13 @@ svg { flex: none; }
 .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .2s; }
 .switch.on { background: var(--blue); }
 .switch.on::after { left: 19px; }
+
+.pics { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.pic { position: relative; width: 84px; height: 84px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pic button { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%; background: rgba(8, 20, 50, .7); color: #fff; display: grid; place-items: center; }
+.pic.add { display: grid; place-items: center; gap: 2px; align-content: center; color: var(--blue); background: var(--blue-soft); border: 1.5px dashed #8db0ee; font-size: 11px; font-weight: 600; cursor: pointer; }
+.pic.add input { display: none; }
+.btn.danger { color: var(--red); border-color: #f3b9b9; }
+.my-actions { display: flex; gap: 8px; margin-top: 10px; }
+.my-actions .btn { height: 34px; font-size: 13px; flex: 1; }

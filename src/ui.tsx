@@ -43,6 +43,9 @@ const P = {
   scan: "M4 8V5a1 1 0 0 1 1-1h3 M16 4h3a1 1 0 0 1 1 1v3 M20 16v3a1 1 0 0 1-1 1h-3 M8 20H5a1 1 0 0 1-1-1v-3 M9 12h6",
   userplus: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M19 8v6 M22 11h-6",
   arrowr: "M5 12h14 M12 5l7 7-7 7",
+  edit: "M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z",
+  trash: "M3 6h18 M8 6V4h8v2 M19 6l-1 14H6L5 6 M10 11v6 M14 11v6",
+  camera: "M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8",
 } as const;
 export type IconName = keyof typeof P;
 
@@ -59,9 +62,27 @@ export const Logo = ({ light, size }: { light?: boolean; size?: number }) => (
 /* ---------- photos ---------- */
 export type PhotoNo = 1 | 2 | 3;
 
-export const Photo = ({ n = 1, h = 150, rounded = true, children }: { n?: PhotoNo; h?: number; rounded?: boolean; children?: ReactNode }) => (
+/** Flat drawing shown when a listing has no photo. */
+const DefaultArt = () => (
+  <svg className="art" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" aria-label="Fotoğraf yok">
+    <rect width="400" height="240" fill="#dbe9fb" />
+    <circle cx="330" cy="52" r="24" fill="#ffd978" />
+    <path d="M0 170c60-40 120-40 190-10s130 20 210-14v94H0z" fill="#bfe0c4" />
+    <rect y="190" width="400" height="50" fill="#9fcf9f" />
+    <rect x="128" y="104" width="144" height="86" fill="#fff7ea" stroke="#16306b" strokeWidth="4" />
+    <path d="M114 108l86-58 86 58z" fill="#1664d9" stroke="#16306b" strokeWidth="4" strokeLinejoin="round" />
+    <rect x="186" y="140" width="28" height="50" fill="#16306b" />
+    <rect x="144" y="124" width="28" height="26" fill="#cfe3fb" stroke="#16306b" strokeWidth="3" />
+    <rect x="228" y="124" width="28" height="26" fill="#cfe3fb" stroke="#16306b" strokeWidth="3" />
+    <rect x="68" y="150" width="10" height="40" fill="#8a5a3a" /><circle cx="73" cy="138" r="26" fill="#4cae6b" stroke="#16306b" strokeWidth="3" />
+    <rect x="324" y="156" width="8" height="34" fill="#8a5a3a" /><circle cx="328" cy="146" r="20" fill="#4cae6b" stroke="#16306b" strokeWidth="3" />
+  </svg>
+);
+
+/** `src` = user-uploaded image, `n` = bundled sample photo; with neither, a default drawing. */
+export const Photo = ({ src, n, h = 150, rounded = true, children }: { src?: string; n?: PhotoNo; h?: number; rounded?: boolean; children?: ReactNode }) => (
   <div className="photo" style={{ height: h, borderRadius: rounded ? undefined : 0 }}>
-    <img src={`${import.meta.env.BASE_URL}photos/p${n}.jpg`} alt="" loading="lazy" />
+    {src || n ? <img src={src ?? `${import.meta.env.BASE_URL}photos/p${n}.jpg`} alt="" loading="lazy" /> : <DefaultArt />}
     {children}
   </div>
 );

@@ -48,7 +48,7 @@ export function Listings() {
         <Count n={shown.length} what="ilan" />
         {shown.map((l) => (
           <Link key={l.id} to={String(l.id)} className="card flush">
-            <Photo n={l.photo} h={160}>
+            <Photo src={l.photos?.[0]} n={l.photo} h={160}>
               {l.collab && <span className="badge green"><Icon n="checkc" s={14} />İşbirliğine Açık</span>}
               <span className="fav"><Icon n="heart" s={22} /></span>
               <span className="sale-tab">{l.type}</span>
@@ -70,17 +70,20 @@ export function ListingDetail() {
   const { id } = useParams();
   const { listings, notify } = useStore();
   const nav = useNavigate();
+  const [idx, setIdx] = useState(0);
   const l = listings.find((x) => x.id === Number(id));
   if (!l) return <Header title="İlan bulunamadı" />;
+  const shots = l.photos ?? [];
   return (
     <div style={{ paddingBottom: 96 }}>
-      <div className="hero">
-        <Photo n={l.photo} h={270} rounded={false}>
-          <span className="gallery-count" style={{ bottom: 30 }}>1/12</span>
+      <div className="hero" onClick={() => shots.length > 1 && setIdx((idx + 1) % shots.length)}>
+        <Photo src={shots[idx]} n={shots.length ? undefined : l.photo} h={270} rounded={false}>
+          <span className="gallery-count" style={{ bottom: 30 }}>{Math.max(1, shots.length) > 1 ? `${idx + 1}/${shots.length}` : "1/1"}</span>
         </Photo>
         <div className="hero-actions">
-          <button className="icon-btn" style={{ color: "#fff" }} onClick={() => nav(-1)} aria-label="Geri"><Icon n="back" s={24} /></button>
+          <button className="icon-btn" style={{ color: "#fff" }} onClick={(e) => { e.stopPropagation(); nav(-1); }} aria-label="Geri"><Icon n="back" s={24} /></button>
           <div className="grow" />
+          {l.mine && <button className="round" onClick={(e) => { e.stopPropagation(); nav(`/app/ilanlar/ekle?duzenle=${l.id}`); }} aria-label="Düzenle"><Icon n="edit" s={18} /></button>}
           <button className="round" onClick={() => notify("Favorilere eklendi.")} aria-label="Favori"><Icon n="heart" s={18} /></button>
           <button className="round" onClick={() => notify("Paylaşım bağlantısı kopyalandı.")} aria-label="Paylaş"><Icon n="share" s={18} /></button>
         </div>
@@ -144,19 +147,21 @@ export function Requests() {
   );
 }
 
-const num = (v: FormDataEntryValue | null) => Number(String(v ?? "").replace(/\D/g, "")) || 0;
-const roomOpts = ["1+0", "1+1", "2+1", "3+1", "4+1", "5+1", "6+1"];
+export const num = (v: FormDataEntryValue | null) => Number(String(v ?? "").replace(/\D/g, "")) || 0;
+export const roomOpts = ["1+0", "1+1", "2+1", "3+1", "4+1", "5+1", "6+1"];
 
-function Place({ cityName = "city", districtName = "district" }: { cityName?: string; districtName?: string }) {
-  const [city, setCity] = useState("");
+export function Place({ defaultCity = "", defaultDistrict = "" }: { defaultCity?: string; defaultDistrict?: string }) {
+  const [city, setCity] = useState(defaultCity);
+  const districts = cities[city] ?? [];
+  const opts = defaultDistrict && city === defaultCity && !districts.includes(defaultDistrict) ? [defaultDistrict, ...districts] : districts;
   return (
     <div className="row">
-      <Field><select name={cityName} required value={city} onChange={(e) => setCity(e.target.value)}><option value="" disabled>İl seçin</option>{Object.keys(cities).map((c) => <option key={c}>{c}</option>)}</select><Icon n="down" s={16} /></Field>
-      <Field><select name={districtName} required defaultValue="" key={city}><option value="" disabled>İlçe seçin</option>{(cities[city] ?? []).map((c) => <option key={c}>{c}</option>)}</select><Icon n="down" s={16} /></Field>
+      <Field><select name="city" required value={city} onChange={(e) => setCity(e.target.value)}><option value="" disabled>İl seçin</option>{Object.keys(cities).map((c) => <option key={c}>{c}</option>)}</select><Icon n="down" s={16} /></Field>
+      <Field><select name="district" required defaultValue={city === defaultCity ? defaultDistrict : ""} key={city}><option value="" disabled>İlçe seçin</option>{opts.map((c) => <option key={c}>{c}</option>)}</select><Icon n="down" s={16} /></Field>
     </div>
   );
 }
-const place = (d: FormData) => `${d.get("district")} / ${d.get("city")}`;
+export const place = (d: FormData) => `${d.get("district")} / ${d.get("city")}`;
 
 const typeIcons: [string, IconName][] = [["Daire", "building"], ["Villa", "home"], ["Arsa", "land"], ["Ticari", "store"], ["Proje", "doc"]];
 
@@ -197,42 +202,6 @@ export function AddRequest() {
         <Field><input name="note" placeholder="Özel Kriterler (opsiyonel)" /></Field>
       </div>
       <div className="bottom-bar"><button className="btn">Talebi Yayınla</button></div>
-    </form>
-  );
-}
-
-export function AddListing() {
-  const { addListing, notify } = useStore();
-  const nav = useNavigate();
-  const submit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const d = new FormData(e.currentTarget);
-    const kind = String(d.get("kind"));
-    addListing({
-      title: String(d.get("title")), location: place(d), price: num(d.get("price")),
-      type: d.get("type") === "Kiralık" ? "Kiralık" : "Satılık", kind, rooms: String(d.get("rooms")),
-      area: num(d.get("area")), floors: 1, collab: d.get("collab") === "on",
-      photo: (1 + Math.floor(Math.random() * 3)) as PhotoNo,
-      desc: String(d.get("desc") || ""), features: [],
-    });
-    notify("İlanınız eklendi."); nav("/app/ilanlar");
-  };
-  return (
-    <form style={{ paddingBottom: 96 }} onSubmit={submit}>
-      <Header title="İlan Ekle" />
-      <div className="pad">
-        <Field><input name="title" required placeholder="İlan başlığı" /></Field>
-        <div className="row">
-          <Field><select name="type" defaultValue="Satılık"><option>Satılık</option><option>Kiralık</option></select><Icon n="down" s={16} /></Field>
-          <Field><select name="kind" defaultValue="Daire"><option>Daire</option><option>Villa</option><option>Arsa</option><option>Ticari</option></select><Icon n="down" s={16} /></Field>
-        </div>
-        <Place />
-        <div className="row"><Field><input name="price" required inputMode="numeric" placeholder="Fiyat (TL)" /></Field><Field><input name="area" required inputMode="numeric" placeholder="m²" /></Field></div>
-        <Field><select name="rooms" defaultValue="3+1">{roomOpts.map((r) => <option key={r}>{r}</option>)}</select><Icon n="down" s={16} /></Field>
-        <Field><input name="desc" placeholder="Açıklama (opsiyonel)" /></Field>
-        <label className="check"><input type="checkbox" name="collab" defaultChecked /> İşbirliğine açık</label>
-      </div>
-      <div className="bottom-bar"><button className="btn">İlanı Yayınla</button></div>
     </form>
   );
 }
