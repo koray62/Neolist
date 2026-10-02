@@ -1,11 +1,12 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { Deal, Listing, Request, deals as d0, listings as l0, requests as r0 } from "./data";
+import { Deal, Listing, Referral, Request, deals as d0, listings as l0, referrals as f0, requests as r0 } from "./data";
 
 type Store = {
-  listings: Listing[]; requests: Request[]; deals: Deal[];
+  listings: Listing[]; requests: Request[]; deals: Deal[]; referrals: Referral[];
   addListing: (l: Omit<Listing, "id">) => void;
   addRequest: (r: Omit<Request, "id">) => void;
   addDeal: (d: Omit<Deal, "id">) => void;
+  addReferral: (r: Omit<Referral, "id">) => void;
   authed: boolean; login: () => void; logout: () => void;
   toast: string; notify: (m: string) => void;
 };
@@ -20,15 +21,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [listings, setL] = useState(l0);
   const [requests, setR] = useState(r0);
   const [deals, setD] = useState(d0);
+  const [referrals, setF] = useState(f0);
   const [authed, setAuthed] = useState(read);
   const [toast, setToast] = useState("");
   const notify = (m: string) => { setToast(m); setTimeout(() => setToast(""), 2200); };
   const next = (a: { id: number }[]) => Math.max(0, ...a.map((x) => x.id)) + 1;
   const value: Store = {
-    listings, requests, deals, authed, toast, notify,
+    listings, requests, deals, referrals, authed, toast, notify,
     addListing: (l) => setL((a) => [{ ...l, id: next(a) }, ...a]),
     addRequest: (r) => setR((a) => [{ ...r, id: next(a) }, ...a]),
     addDeal: (d) => setD((a) => [{ ...d, id: next(a) }, ...a]),
+    addReferral: (r) => setF((a) => [{ ...r, id: next(a) }, ...a]),
     login: () => { write(true); setAuthed(true); },
     logout: () => { write(false); setAuthed(false); },
   };

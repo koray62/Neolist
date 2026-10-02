@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, NavLink, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { Icon, IconName } from "./ui";
 import { useStore } from "./store";
 import { Splash, Login, Signup } from "./pages/auth";
 import { Dashboard, MenuDrawer, QuickSheet } from "./pages/home";
 import { Listings, ListingDetail, Requests, AddRequest, Deals, Projects, ProjectDetail, AddListing, AddDeal } from "./pages/lists";
-import { Collab, Messages, Profile, Settings } from "./pages/misc";
+import { Collab, Messages, NewReferral, Profile, Settings } from "./pages/misc";
 
 const tabs: { to: string; label: string; icon: IconName }[] = [
   { to: "/app", label: "Ana Sayfa", icon: "home" },
@@ -19,14 +19,14 @@ function Shell() {
   const [quick, setQuick] = useState(false);
   const { pathname } = useLocation();
   const { authed } = useStore();
+  useEffect(() => { setMenu(false); setQuick(false); }, [pathname]);
   if (!authed) return <Navigate to="/giris" replace />;
-  const showTabs = tabs.some((t) => t.to === pathname) || pathname === "/app/mesajlar";
+  const showTabs = ["/app", "/app/ilanlar", "/app/talepler", "/app/firsatlar", "/app/projeler", "/app/isbirligi", "/app/mesajlar", "/app/profil"].includes(pathname);
   return (
     <>
       <Outlet context={{ openMenu: () => setMenu(true), openQuick: () => setQuick(true) }} />
       {showTabs && (
         <>
-          <button className="fab" aria-label="Hızlı erişim" onClick={() => setQuick(true)}><Icon n="plus" s={26} /></button>
           <nav className="tabbar">
             {tabs.map((t) => (
               <NavLink key={t.to} to={t.to} end className={({ isActive }) => (isActive ? "on" : "")}>
@@ -64,6 +64,7 @@ export default function App() {
             <Route path="projeler" element={<Projects />} />
             <Route path="projeler/:id" element={<ProjectDetail />} />
             <Route path="isbirligi" element={<Collab />} />
+            <Route path="isbirligi/yeni" element={<NewReferral />} />
             <Route path="mesajlar" element={<Messages />} />
             <Route path="profil" element={<Profile />} />
             <Route path="ayarlar" element={<Settings />} />
