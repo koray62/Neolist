@@ -42,7 +42,7 @@ export function Dashboard() {
         {listings.slice(0, 3).map((l) => (
           <Link key={l.id} to={`ilanlar/${l.id}`} className="card row-card">
             <div style={{ width: 104, flex: "none", borderRadius: 10, overflow: "hidden" }}>
-              <Photo scene={l.scene} v={l.v} h={80} rounded={false}><span className="badge blue">{l.type}</span></Photo>
+              <Photo n={l.photo} h={80} rounded={false}><span className="badge blue">{l.type}</span></Photo>
             </div>
             <div><b>{l.title}</b><p className="muted">{l.location}</p><div className="price" style={{ fontSize: 17 }}>{tl(l.price)}</div></div>
           </Link>

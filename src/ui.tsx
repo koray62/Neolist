@@ -1,4 +1,4 @@
-import { ReactNode, useId } from "react";
+import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 const P = {
@@ -56,96 +56,12 @@ export const Logo = ({ light, size }: { light?: boolean; size?: number }) => (
   <span className="logo" style={{ color: light ? "#fff" : "#12306f", fontSize: size }}>NEOLIST</span>
 );
 
-/* ---------- illustrated "photos" ---------- */
-export type Scene = "villa" | "pool" | "tower" | "complex";
+/* ---------- photos ---------- */
+export type PhotoNo = 1 | 2 | 3;
 
-const uid = (raw: string) => raw.replace(/[^a-zA-Z0-9]/g, "");
-
-function SceneArt({ scene, v }: { scene: Scene; v: number }) {
-  const id = uid(useId());
-  const wall = ["#efe7d8", "#e4d7c3", "#f2ece2"][v % 3];
-  const roof = ["#4b3b33", "#3e4a52", "#5a4636"][v % 3];
-  const skyTop = ["#4a9de0", "#5aa6e8", "#3f8fd6"][v % 3];
-  const common = (
-    <defs>
-      <linearGradient id={`s${id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={skyTop} /><stop offset="1" stopColor="#cfe8f7" /></linearGradient>
-      <linearGradient id={`g${id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#5aa83f" /><stop offset="1" stopColor="#2c6a29" /></linearGradient>
-      <linearGradient id={`w${id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#52bce6" /><stop offset="1" stopColor="#2f8fbf" /></linearGradient>
-      <pattern id={`p${id}`} width="9" height="11" patternUnits="userSpaceOnUse"><rect x="1.5" y="2" width="6" height="7" fill="#dbe9f5" opacity=".55" /></pattern>
-    </defs>
-  );
-  if (scene === "tower") {
-    const b = [[56 + v * 6, 40, 92, 160, "#8aa2bb"], [156, 12 + v * 8, 82, 190, "#667f9d"], [246 - v * 6, 52, 104, 150, "#a1b3c6"], [24, 110, 44, 90, "#b9c6d3"]] as const;
-    return (
-      <>
-        {common}
-        <rect width="400" height="240" fill={`url(#s${id})`} />
-        {b.map(([x, y, w, h, c], i) => (
-          <g key={i}><rect x={x} y={y} width={w} height={h} fill={c} /><rect x={x} y={y} width={w} height={h} fill={`url(#p${id})`} /></g>
-        ))}
-        <rect y="196" width="400" height="44" fill="#3d7ea8" />
-        {[0, 1, 2, 3, 4].map((i) => <rect key={i} x={20 + i * 76} y={206 + (i % 2) * 14} width="50" height="3" rx="1.5" fill="#8cc6e3" opacity=".7" />)}
-        {[30, 90, 170, 260, 330, 380].map((x, i) => <circle key={i} cx={x} cy={196} r={16 + (i % 3) * 3} fill={i % 2 ? "#2f6b3a" : "#3c7d45"} />)}
-      </>
-    );
-  }
-  if (scene === "complex") {
-    return (
-      <>
-        {common}
-        <rect width="400" height="240" fill={`url(#s${id})`} />
-        {[0, 1, 2, 3, 4].map((i) => {
-          const x = 80 + i * 14, w = 300 - i * 14, y = 30 + i * 33;
-          return (
-            <g key={i}>
-              <rect x={x} y={y} width={w} height="28" fill={i % 2 ? "#e6dcc8" : "#d9cbb1"} />
-              {Array.from({ length: Math.floor((w - 12) / 30) }).map((_, j) => (
-                <g key={j}><rect x={x + 8 + j * 30} y={y + 6} width="20" height="14" fill="#4a5d70" /><rect x={x + 8 + j * 30} y={y + 12} width="20" height="1.5" fill="#9fb3c6" /></g>
-              ))}
-              <rect x={x - 6} y={y + 28} width={w + 6} height="4" fill="#7d6e58" />
-              {Array.from({ length: Math.floor(w / 22) }).map((_, j) => <circle key={j} cx={x + 6 + j * 22} cy={y + 29} r="3.4" fill="#3b8a3f" />)}
-            </g>
-          );
-        })}
-        <rect y="198" width="400" height="42" fill={`url(#w${id})`} />
-        {[0, 1, 2, 3].map((i) => <rect key={i} x={100 + i * 70} y={208 + (i % 2) * 12} width="44" height="3" rx="1.5" fill="#9fdcf4" opacity=".7" />)}
-        <rect x="26" y="130" width="8" height="70" fill="#5a3d28" />
-        <circle cx="30" cy="118" r="34" fill="#1f5a2c" /><circle cx="52" cy="140" r="24" fill="#2a6e34" /><circle cx="8" cy="140" r="24" fill="#256534" />
-      </>
-    );
-  }
-  const pool = scene === "pool";
-  return (
-    <>
-      {common}
-      <rect width="400" height="240" fill={`url(#s${id})`} />
-      <ellipse cx="50" cy="120" rx="70" ry="52" fill="#2d6a3a" /><ellipse cx="350" cy="115" rx="75" ry="55" fill="#2a5f36" />
-      <ellipse cx="205" cy="112" rx="95" ry="30" fill="#3c7d45" />
-      <path d={pool ? "M0 175 Q200 158 400 178 V240 H0z" : "M0 168 Q200 148 400 174 V240 H0z"} fill={`url(#g${id})`} />
-      <rect x="112" y="108" width="190" height="62" fill={wall} />
-      <rect x="142" y="78" width="152" height="34" fill={wall} />
-      <polygon points="132,80 218,58 302,80" fill={roof} />
-      <rect x="104" y="104" width="206" height="7" fill={roof} />
-      {[0, 1, 2, 3, 4].map((i) => <g key={i}><rect x={126 + i * 35} y="122" width="18" height="32" fill="#ffd98a" stroke="#6b5744" strokeWidth="1.5" /><rect x={134.5 + i * 35} y="122" width="1.5" height="32" fill="#6b5744" /></g>)}
-      {[0, 1, 2, 3].map((i) => <rect key={i} x={156 + i * 33} y="87" width="15" height="20" fill="#ffd98a" stroke="#6b5744" strokeWidth="1.5" />)}
-      <rect x="112" y="168" width="190" height="5" fill="#b9ad98" />
-      {pool && (
-        <>
-          <rect x="30" y="186" width="340" height="44" rx="8" fill={`url(#w${id})`} />
-          {[0, 1, 2, 3, 4, 5].map((i) => <rect key={i} x={50 + i * 54} y={196 + (i % 2) * 14} width="36" height="3" rx="1.5" fill="#9fdcf4" opacity=".7" />)}
-        </>
-      )}
-      <rect x="36" y="100" width="9" height="80" fill="#5a3d28" />
-      <circle cx="40" cy="82" r="40" fill="#1f5a2c" /><circle cx="14" cy="104" r="28" fill="#2a6e34" /><circle cx="72" cy="98" r="30" fill="#256534" />
-      <rect x="352" y="100" width="9" height="80" fill="#5a3d28" />
-      <circle cx="358" cy="88" r="40" fill="#1f5a2c" /><circle cx="388" cy="110" r="28" fill="#2a6e34" /><circle cx="326" cy="106" r="28" fill="#256534" />
-    </>
-  );
-}
-
-export const Photo = ({ scene = "villa", v = 0, h = 150, rounded = true, children }: { scene?: Scene; v?: number; h?: number; rounded?: boolean; children?: ReactNode }) => (
+export const Photo = ({ n = 1, h = 150, rounded = true, children }: { n?: PhotoNo; h?: number; rounded?: boolean; children?: ReactNode }) => (
   <div className="photo" style={{ height: h, borderRadius: rounded ? undefined : 0 }}>
-    <svg className="scene" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice"><SceneArt scene={scene} v={v} /></svg>
+    <img src={`${import.meta.env.BASE_URL}photos/p${n}.jpg`} alt="" loading="lazy" />
     {children}
   </div>
 );

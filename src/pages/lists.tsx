@@ -1,6 +1,6 @@
 import { FormEvent, ReactNode, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Chips, Field, Header, Icon, IconName, Photo, Search } from "../ui";
+import { Chips, Field, Header, Icon, IconName, Photo, PhotoNo, Search } from "../ui";
 import { budget, cities, featureIcons, projects, tl } from "../data";
 import { useStore } from "../store";
 
@@ -48,7 +48,7 @@ export function Listings() {
         <Count n={shown.length} what="ilan" />
         {shown.map((l) => (
           <Link key={l.id} to={String(l.id)} className="card flush">
-            <Photo scene={l.scene} v={l.v} h={160}>
+            <Photo n={l.photo} h={160}>
               {l.collab && <span className="badge green"><Icon n="checkc" s={14} />İşbirliğine Açık</span>}
               <span className="fav"><Icon n="heart" s={22} /></span>
               <span className="sale-tab">{l.type}</span>
@@ -75,7 +75,7 @@ export function ListingDetail() {
   return (
     <div style={{ paddingBottom: 96 }}>
       <div className="hero">
-        <Photo scene={l.scene} v={l.v} h={270} rounded={false}>
+        <Photo n={l.photo} h={270} rounded={false}>
           <span className="gallery-count" style={{ bottom: 30 }}>1/12</span>
         </Photo>
         <div className="hero-actions">
@@ -212,7 +212,7 @@ export function AddListing() {
       title: String(d.get("title")), location: place(d), price: num(d.get("price")),
       type: d.get("type") === "Kiralık" ? "Kiralık" : "Satılık", kind, rooms: String(d.get("rooms")),
       area: num(d.get("area")), floors: 1, collab: d.get("collab") === "on",
-      scene: kind === "Villa" ? "villa" : kind === "Ticari" ? "tower" : "complex", v: Math.floor(Math.random() * 3),
+      photo: (1 + Math.floor(Math.random() * 3)) as PhotoNo,
       desc: String(d.get("desc") || ""), features: [],
     });
     notify("İlanınız eklendi."); nav("/app/ilanlar");
@@ -245,7 +245,7 @@ export function AddDeal() {
     const d = new FormData(e.currentTarget);
     addDeal({
       title: String(d.get("title")), location: place(d), oldPrice: num(d.get("old")), price: num(d.get("price")),
-      label: d.get("label") === "Acil Satış" ? "Acil Satış" : "Özel Fiyat", scene: "villa", v: Math.floor(Math.random() * 3),
+      label: d.get("label") === "Acil Satış" ? "Acil Satış" : "Özel Fiyat", photo: (1 + Math.floor(Math.random() * 3)) as PhotoNo,
     });
     notify("Fırsat eklendi."); nav("/app/firsatlar");
   };
@@ -284,7 +284,7 @@ export function Deals() {
         {shown.map((d) => (
           <div key={d.id} className="card row-card" style={{ alignItems: "stretch" }}>
             <div style={{ width: 118, flex: "none", borderRadius: 10, overflow: "hidden" }}>
-              <Photo scene={d.scene} v={d.v} h={132} rounded={false}><span className="badge">{d.label}</span></Photo>
+              <Photo n={d.photo} h={132} rounded={false}><span className="badge">{d.label}</span></Photo>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 3, justifyContent: "center", minWidth: 0 }}>
               <h3 style={{ fontSize: 16 }}>{d.title}</h3>
@@ -314,7 +314,7 @@ export function Projects() {
         {shown.map((p) => (
           <Link key={p.id} to={String(p.id)} className="card row-card" style={{ alignItems: "stretch" }}>
             <div style={{ width: 112, flex: "none", borderRadius: 10, overflow: "hidden" }}>
-              <Photo scene={p.scene} v={p.v} h={128} rounded={false}><span className="badge">{p.badge}</span></Photo>
+              <Photo n={p.photo} h={128} rounded={false}><span className="badge">{p.badge}</span></Photo>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 3, justifyContent: "center" }}>
               <h3>{p.name}</h3>
@@ -346,7 +346,7 @@ export function ProjectDetail() {
       </div>
       <div style={{ padding: "4px 14px 0" }}>
         <div style={{ borderRadius: 14, overflow: "hidden", position: "relative" }}>
-          <Photo scene="complex" v={p.v} h={190} rounded={false}><span className="gallery-count">1/2</span></Photo>
+          <Photo n={p.photo} h={190} rounded={false}><span className="gallery-count">1/2</span></Photo>
         </div>
       </div>
       <div className="pad" style={{ paddingTop: 16 }}>
