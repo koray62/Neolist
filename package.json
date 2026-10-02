@@ -1,0 +1,9 @@
+{
+  "name": "neolist",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Neolist — a minimal list app",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
